@@ -1,37 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## DebtFlow – омниканальный конструктор коммуникаций (MVP)
 
-## Getting Started
+DebtFlow — это прототип веб‑сервиса для работы с задолженностью, который показывает, как можно:
 
-First, run the development server:
+- загружать списки должников;
+- настраивать шаблоны сообщений (SMS / Email / Call);
+- запускать кампании по выбранным сегментам;
+- имитировать отправку по каналам (mock‑провайдеры);
+- анализировать результаты на дашборде (объёмы, успешность, стоимость).
+
+Проект создан как демонстрационный MVP для портфолио: он сочетает юридический контекст (152‑ФЗ, взыскание задолженности), операционный опыт (колл‑центры, лидогенерация) и современный технический стек.
+
+## Стек
+
+- Next.js (App Router, TypeScript)
+- Supabase (PostgreSQL, Auth, RLS)
+- Tailwind CSS + shadcn/ui
+- Recharts (графики)
+- Vercel (деплой)
+
+## Основные страницы
+
+- `/dashboard` — дашборд: количество сообщений, успешность, стоимость, график по дням, недавние коммуникации.
+- `/debtors` — список должников, импорт CSV, фильтры.
+- `/templates` — шаблоны сообщений (SMS/Email) с редактором и счётчиком символов.
+- `/channels` — настройки mock‑каналов и их стоимости.
+- `/communications/new` — мастер запуска кампании (3 шага).
+- `/communications` — лог отправок.
+- `/admin/seed` — административная страница для заполнения демо‑данными (защищена `SEED_SECRET`).
+- `/legal/privacy`, `/legal/terms` — заглушки юридических документов.
+
+## Запуск локально
+
+1. Установите зависимости:
+
+```bash
+npm install
+```
+
+2. Создайте в корне файл `.env.local` на основе `.env.example` и заполните:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SEED_SECRET` (любой сложный секрет, тот же нужно будет указать в Vercel).
+
+3. В Supabase:
+
+- создайте новый проект;
+- выполните SQL из файлов:
+  - `supabase/schema.sql` (таблицы и связи),
+  - `supabase/rls.sql` (политики RLS — опционально на этапе демо).
+
+4. Запустите dev‑сервер:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте `http://localhost:3000`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- сначала зарегистрируйтесь/войдите;
+- перейдите на `/admin/seed` и выполните заполнение демо‑данными;
+- после этого будут доступны живые данные на `/debtors`, `/templates`, `/dashboard` и в логах.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Деплой на Vercel
 
-## Learn More
+1. Залейте репозиторий на GitHub.
+2. В Vercel:
+   - создайте новый проект из этого репозитория;
+   - в настройках проекта добавьте переменные окружения:
+     - `NEXT_PUBLIC_SUPABASE_URL`
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+     - `SEED_SECRET`
+3. Дождитесь деплоя и откройте выданный домен вида `https://debtflow-*.vercel.app`.
+4. На проде выполните:
+   - регистрацию пользователя,
+   - запуск `/admin/seed`,
+   - прохождение основного сценария: Debtors → Templates → Communications → Dashboard.
 
-To learn more about Next.js, take a look at the following resources:
+## Юридические заметки
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- В демо‑версии используются исключительно синтетические данные, не являющиеся персональными.
+- В реальном продукте должны быть учтены требования 152‑ФЗ:
+  - хранение и обработка ПДн на территории РФ;
+  - получение согласий субъектов;
+  - регламенты доступа и аудита.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+На страницах `/legal/privacy` и `/legal/terms` размещены базовые заглушки под политику конфиденциальности и пользовательское соглашение.
 
-## Deploy on Vercel
+## Дальнейшее развитие
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Привязка пользователей к организациям и полноценная многотенантность.
+- Более продвинутые сегменты должников и сценарии кампаний.
+- Интеграция с реальными SMS / email / voice‑провайдерами.
+- Расширенная отчётность и A/B‑тесты текстов сообщений.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# debtflow" 
