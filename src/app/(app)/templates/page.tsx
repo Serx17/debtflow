@@ -152,8 +152,12 @@ export default function TemplatesPage() {
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Templates</h2>
           <p className="text-sm text-slate-600">
-            Шаблоны сообщений для SMS и email. Используются при запуске
-            кампаний.
+            Шаблоны сообщений для SMS, email и звонков. Используются при
+            запуске кампаний.
+          </p>
+          <p className="text-xs text-slate-500">
+            Тексты и частота контактов должны соответствовать требованиям
+            230‑ФЗ.
           </p>
         </div>
         <button
