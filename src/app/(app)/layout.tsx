@@ -93,6 +93,20 @@ export default function AppLayout({ children }: Props) {
           </button>
           <button
             type="button"
+            onClick={() => router.push("/compliance")}
+            className="rounded-md px-3 py-2 text-left text-slate-700 hover:bg-slate-100"
+          >
+            Compliance
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/scorer")}
+            className="rounded-md px-3 py-2 text-left text-slate-700 hover:bg-slate-100"
+          >
+            Scorer
+          </button>
+          <button
+            type="button"
             onClick={() => router.push("/channels")}
             className="rounded-md px-3 py-2 text-left text-slate-700 hover:bg-slate-100"
           >
