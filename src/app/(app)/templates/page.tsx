@@ -8,14 +8,14 @@ type Template = {
   id: string
   organization_id: string
   name: string
-  channel: "sms" | "email"
+  channel: "sms" | "email" | "call"
   subject: string | null
   body: string
   created_at: string
   updated_at: string
 }
 
-type ChannelType = "sms" | "email"
+type ChannelType = "sms" | "email" | "call"
 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<Template[]>([])
@@ -195,7 +195,11 @@ export default function TemplatesPage() {
                 <tr key={template.id} className="border-t border-slate-100">
                   <td className="px-3 py-2">{template.name}</td>
                   <td className="px-3 py-2">
-                    {template.channel === "sms" ? "SMS" : "Email"}
+                    {template.channel === "sms"
+                      ? "SMS"
+                      : template.channel === "email"
+                        ? "Email"
+                        : "Call"}
                   </td>
                   <td className="px-3 py-2 text-sm text-slate-600">
                     {template.subject ?? "—"}
@@ -258,6 +262,7 @@ export default function TemplatesPage() {
                 >
                   <option value="sms">SMS</option>
                   <option value="email">Email</option>
+                  <option value="call">Call (звонок)</option>
                 </select>
               </div>
 
@@ -293,6 +298,11 @@ export default function TemplatesPage() {
                     }`}
                   >
                     Длина SMS: {smsLength} / 160 символов
+                  </p>
+                )}
+                {channel === "call" && (
+                  <p className="mt-1 text-xs text-slate-500">
+                    Текст используется как скрипт/заметки для оператора или голосового робота.
                   </p>
                 )}
               </div>

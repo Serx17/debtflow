@@ -120,15 +120,24 @@ export async function POST(request: Request) {
       },
       {
         organization_id: DEMO_ORGANIZATION_ID,
-        name: "Жёсткое SMS-напоминание",
-        channel: "sms",
+        name: "Скрипт звонка оператора",
+        channel: "call",
         subject: null,
         body:
-          "Важно! У вас просроченная задолженность. Свяжитесь с нашим специалистом, чтобы избежать дополнительных расходов.",
+          "Представиться, подтвердить данные клиента, кратко описать ситуацию с задолженностью, предложить варианты погашения или реструктуризации. Зафиксировать договорённость.",
       },
     ]
 
-    await supabase.from("templates").insert(templatesPayload)
+    const { error: templatesInsertError } = await supabase
+      .from("templates")
+      .insert(templatesPayload)
+
+    if (templatesInsertError) {
+      return NextResponse.json(
+        { error: "Ошибка вставки шаблонов: " + templatesInsertError.message },
+        { status: 500 }
+      )
+    }
 
     const { data: debtors } = await supabase
       .from("debtors")
@@ -185,6 +194,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       message:
         "Seed выполнен: добавлены демо-должники, шаблоны и записи в communication_log.",
+      templateChannels: templatesPayload.map((t) => t.channel),
     })
   } catch (error) {
     return NextResponse.json(

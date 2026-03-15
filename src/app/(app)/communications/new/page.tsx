@@ -367,7 +367,11 @@ export default function NewCommunicationPage() {
                             {template.name}
                           </span>
                           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] uppercase tracking-wide text-slate-600">
-                            {template.channel === "sms" ? "SMS" : "Email"}
+                            {template.channel === "sms"
+                              ? "SMS"
+                              : template.channel === "email"
+                                ? "Email"
+                                : "Call"}
                           </span>
                         </div>
                         {template.subject && (
