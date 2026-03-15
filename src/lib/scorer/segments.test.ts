@@ -9,11 +9,12 @@ describe("scoreToSegment", () => {
 
   it("maps medium score to активная работа", () => {
     expect(scoreToSegment(0.5)).toBe("активная работа")
-    expect(scoreToSegment(0.3)).toBe("активная работа")
+    expect(scoreToSegment(0.4)).toBe("активная работа")
   })
 
   it("maps low score to судебное взыскание", () => {
     expect(scoreToSegment(0.2)).toBe("судебное взыскание")
+    expect(scoreToSegment(0.39)).toBe("судебное взыскание")
     expect(scoreToSegment(0)).toBe("судебное взыскание")
   })
 })

@@ -14,7 +14,7 @@ export type ChannelType = "sms" | "email" | "call"
 
 export function scoreToSegment(score: number): Segment {
   if (score >= 0.6) return "мягкое напоминание"
-  if (score >= 0.3) return "активная работа"
+  if (score >= 0.4) return "активная работа"
   return "судебное взыскание"
 }
 

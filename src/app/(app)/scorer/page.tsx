@@ -41,9 +41,11 @@ export default function ScorerPage() {
     load()
   }, [])
 
-  const segments = Array.from(
-    new Set(debtors.map((d) => d.segment))
-  ).sort()
+  const allSegments = [
+    "мягкое напоминание",
+    "активная работа",
+    "судебное взыскание",
+  ]
   const filtered =
     segmentFilter === ""
       ? debtors
@@ -60,7 +62,30 @@ export default function ScorerPage() {
         </p>
       </div>
 
-      {segments.length > 0 && (
+      <section
+        aria-label="О модели машинного обучения"
+        className="rounded-lg border-2 border-slate-300 bg-slate-100 p-4 text-sm text-slate-800 shadow-sm"
+      >
+        <h3 className="mb-3 text-base font-semibold text-slate-900">
+          О модели машинного обучения
+        </h3>
+        <div className="space-y-2">
+          <p>
+            <strong>Модель:</strong> логистическая регрессия. Предсказывает вероятность возврата долга (0–1) по признакам должника.
+          </p>
+          <p>
+            <strong>Признаки (фичи):</strong> нормализованная сумма долга (к порогу 500 тыс. ₽), регион (кодированный). Чем выше долг — тем ниже скор; регион влияет на веса модели.
+          </p>
+          <p>
+            <strong>Обучение:</strong> на синтетических данных (низкий долг и «хороший» регион → метка 1, высокий долг → 0). Градиентный спуск, 200 эпох. Коэффициенты сохраняются в памяти при каждом запросе.
+          </p>
+          <p>
+            <strong>Сегменты:</strong> по порогам скора — «мягкое напоминание» (≥0,6), «активная работа» (0,4–0,6), «судебное взыскание» (&lt;0,4). При долге ≥250 тыс. ₽ назначается сегмент «судебное взыскание». Рекомендуемый канал: SMS / Email / Call.
+          </p>
+        </div>
+      </section>
+
+      {!loading && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-slate-600">Сегмент:</span>
           <select
@@ -69,7 +94,7 @@ export default function ScorerPage() {
             className="rounded border border-slate-300 px-2 py-1.5 text-sm"
           >
             <option value="">Все</option>
-            {segments.map((s) => (
+            {allSegments.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
@@ -88,7 +113,9 @@ export default function ScorerPage() {
         <p className="text-sm text-slate-600">Загрузка…</p>
       ) : filtered.length === 0 ? (
         <p className="text-sm text-slate-600">
-          Нет должников. Добавьте должников или выполните seed на /admin/seed.
+          {debtors.length === 0
+            ? "Нет должников. Добавьте должников или выполните seed на /admin/seed."
+            : "В выбранном сегменте нет должников. Выберите другой сегмент или выполните seed (должники с долгом ≥250 тыс. ₽ попадут в «судебное взыскание»)."}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-md border border-slate-200 bg-white">

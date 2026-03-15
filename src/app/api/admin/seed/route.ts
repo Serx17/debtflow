@@ -70,7 +70,10 @@ export async function POST(request: Request) {
         .replace(/\s+/g, ".")
         .replace("ё", "e")
       const email = `${emailLocal}${index}@example.test`
-      const debtAmount = randomInt(5_000, 250_000)
+      const debtAmount =
+        index >= 25
+          ? randomInt(320_000, 500_000)
+          : randomInt(5_000, 250_000)
       const region = REGIONS[index % REGIONS.length]
 
       return {

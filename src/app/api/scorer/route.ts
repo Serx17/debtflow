@@ -8,7 +8,7 @@ import {
   scoreToSegment,
   segmentToChannel,
 } from "@/lib/scorer"
-import type { DebtorRow } from "@/lib/scorer"
+import type { DebtorRow, Segment } from "@/lib/scorer"
 
 export type ScorerDebtorRow = {
   debtorId: string
@@ -44,15 +44,20 @@ export async function GET(request: Request) {
   }
 
   const coef = trainSynthetic()
+  const HIGH_DEBT_THRESHOLD = 250_000
   const rows: ScorerDebtorRow[] = debtors.map((d) => {
     const features = extractFeatures(d)
     const score = predict(coef, features)
-    const segment = scoreToSegment(score)
+    const debtAmount = Number(d.debt_amount)
+    const segment: Segment =
+      debtAmount >= HIGH_DEBT_THRESHOLD
+        ? "судебное взыскание"
+        : scoreToSegment(score)
     const recommendedChannel = segmentToChannel(segment)
     return {
       debtorId: d.id,
       fullName: d.full_name,
-      debtAmount: Number(d.debt_amount),
+      debtAmount,
       region: d.region,
       score: Math.round(score * 10000) / 10000,
       segment,
